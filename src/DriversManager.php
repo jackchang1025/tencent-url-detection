@@ -15,7 +15,7 @@ class DriversManager extends Manager
         return $this->config->get('tencent-url-detection.default');
     }
 
-    public function driver($driver = null): Driver
+    public function driver($driver = null): Request
     {
         return parent::driver($driver);
     }
@@ -23,17 +23,17 @@ class DriversManager extends Manager
     /**
      * 创建代理服务实例.
      */
-    public function connector(?string $driver = null): Driver
+    public function connector(?string $driver = null): Request
     {
         return $this->driver($driver);
     }
 
-    public function createCgiUrlsecQqDriver()
+    public function createCgiUrlsecQqDriver(): CgiUrlsecQq   
     {
         return new CgiUrlsecQq();
     }
 
-    public function createTwoCaptchaDriver()
+    public function createTwoCaptchaDriver(): TwoCaptcha
     {
         return new TwoCaptcha(
             new \TwoCaptcha\TwoCaptcha($this->config->get('tencent-url-detection.drivers.two_captcha.api_key')),
@@ -41,7 +41,7 @@ class DriversManager extends Manager
         );
     }
 
-    public function createRrbayDriver()
+    public function createRrbayDriver(): Rrbay
     {
         return new Rrbay($this->config->get('tencent-url-detection.drivers.rrbay.key'));
     }
