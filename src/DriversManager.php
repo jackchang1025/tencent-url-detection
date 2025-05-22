@@ -12,7 +12,7 @@ class DriversManager extends Manager
 {
     public function getDefaultDriver(): ?string
     {
-        return $this->config->get('url-detection.default');
+        return $this->config->get('tencent-url-detection.default');
     }
 
     public function driver($driver = null): Driver
@@ -36,13 +36,13 @@ class DriversManager extends Manager
     public function createTwoCaptchaDriver()
     {
         return new TwoCaptcha(
-            new \TwoCaptcha\TwoCaptcha($this->config->get('url-detection.drivers.two_captcha.api_key')),
-            $this->config->get('url-detection.drivers.two_captcha.appid')
+            new \TwoCaptcha\TwoCaptcha($this->config->get('tencent-url-detection.drivers.two_captcha.api_key')),
+            $this->config->get('tencent-url-detection.drivers.two_captcha.appid')
         );
     }
 
     public function createRrbayDriver()
     {
-        return new Rrbay($this->config->get('url-detection.drivers.rrbay.key'));
+        return new Rrbay($this->config->get('tencent-url-detection.drivers.rrbay.key'));
     }
 }
