@@ -3,15 +3,11 @@
 namespace Weijiajia\TencentUrlDetection\Drivers;
 
 use Saloon\Enums\Method;
-use Saloon\Http\SoloRequest;
-use Saloon\Traits\Plugins\AlwaysThrowOnErrors;
-use Weijiajia\TencentUrlDetection\Contracts\Driver;
+use Weijiajia\TencentUrlDetection\Request;
 use Weijiajia\TencentUrlDetection\Response;
 
-class TwoCaptcha extends SoloRequest implements Driver
+class TwoCaptcha extends Request
 {
-    use AlwaysThrowOnErrors;
-
     protected string $ticket;
     protected string $randstr;
     protected string $url;

@@ -24,7 +24,7 @@ class TencentUrlDetectionServiceProvider extends ServiceProvider
      */
     protected function registerConfig(): void
     {
-        $configPath = __DIR__.'/../config/url-detection.php';
+        $configPath = __DIR__.'/../config/tencent-url-detection.php';
 
         $this->publishes([
             $configPath => config_path('tencent-url-detection.php'),
