@@ -1,0 +1,13 @@
+# Exclude directories from distribution archive
+/tests export-ignore
+/.github export-ignore
+/.idea export-ignore
+/.vscode export-ignore
+/.php-cs-fixer.cache export-ignore
+/.phpunit.result.cache export-ignore
+phpunit.xml export-ignore
+.php-cs-fixer.dist.php export-ignore
+
+# Exclude specific files
+/.gitignore export-ignore
+/.gitattributes export-ignore
