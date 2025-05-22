@@ -1,0 +1,63 @@
+{
+  "name": "weijiajia/tencent-url-detection",
+  "description": "A PHP library to detect URL safety using Tencent URL security API, with support for multiple captcha solving services.",
+  "type": "library",
+  "keywords": [
+    "tencent",
+    "url",
+    "security",
+    "detection",
+    "captcha",
+    "qq",
+    "wechat",
+    "微信域名检测"
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Weijiajia\\TencentUrlDetection\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "weijiajia",
+      "email": "weijiajia@qq.com"
+    }
+  ],
+  "require": {
+    "php": "^8.1",
+    "2captcha/2captcha": "^1.2",
+    "saloonphp/saloon": "^3.0",
+    "illuminate/support": "^9.0|^10.0|^11.0|^12.0"
+  },
+  "require-dev": {
+    "pestphp/pest": "^2.0 || ^3.0",
+    "friendsofphp/php-cs-fixer": "^3.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/pest",
+    "test-coverage": "vendor/bin/pest --coverage",
+    "cs-check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+    "cs-fix": "vendor/bin/php-cs-fixer fix"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true,
+      "php-http/discovery": true
+    }
+  },
+  "extra": {
+        "laravel": {
+            "providers": [
+                "Weijiajia\\TencentUrlDetection\\TencentUrlDetectionServiceProvider"
+            ]
+        }
+    },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

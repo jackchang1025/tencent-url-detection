@@ -1,0 +1,48 @@
+<?php
+
+namespace Weijiajia\TencentUrlDetection;
+
+use Illuminate\Support\Manager;
+use Weijiajia\TencentUrlDetection\Contracts\Driver;
+use Weijiajia\TencentUrlDetection\Drivers\CgiUrlsecQq;
+use Weijiajia\TencentUrlDetection\Drivers\Rrbay;
+use Weijiajia\TencentUrlDetection\Drivers\TwoCaptcha;
+
+class DriversManager extends Manager
+{
+    public function getDefaultDriver(): ?string
+    {
+        return $this->config->get('url-detection.default');
+    }
+
+    public function driver($driver = null): Driver
+    {
+        return parent::driver($driver);
+    }
+
+    /**
+     * 创建代理服务实例.
+     */
+    public function connector(?string $driver = null): Driver
+    {
+        return $this->driver($driver);
+    }
+
+    public function createCgiUrlsecQqDriver()
+    {
+        return new CgiUrlsecQq();
+    }
+
+    public function createTwoCaptchaDriver()
+    {
+        return new TwoCaptcha(
+            new \TwoCaptcha\TwoCaptcha($this->config->get('url-detection.drivers.two_captcha.api_key')),
+            $this->config->get('url-detection.drivers.two_captcha.appid')
+        );
+    }
+
+    public function createRrbayDriver()
+    {
+        return new Rrbay($this->config->get('url-detection.drivers.rrbay.key'));
+    }
+}
