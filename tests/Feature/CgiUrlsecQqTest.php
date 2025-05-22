@@ -11,7 +11,7 @@ use Weijiajia\TencentUrlDetection\Contracts\Driver; // 引入 Connector
 use Weijiajia\TencentUrlDetection\Drivers\CgiUrlsecQq;
 use Weijiajia\TencentUrlDetection\Response as TencentResponse;
 
- // Alias the Response class
+// Alias the Response class
 
 // Test the CgiUrlsecQq driver can check a safe URL.
 test('cgi urlsec qq driver can check safe url', function () {
@@ -43,8 +43,8 @@ test('cgi urlsec qq driver can check safe url', function () {
     expect($response)->toBeInstanceOf(TencentResponse::class);
     expect($response->getUrl())->toBe($urlToCheck);
     expect($response->isWeChatRiskWarning())->toBeTrue(); // 验证是否被标记为风险
-    expect($response->getWordingTitle())->toBeNull(); // 验证其他字段是否为默认值
-    expect($response->getWording())->toBeNull();
+    expect($response->getWordingTitle())->toBe(''); // 验证其他字段是否为默认值
+    expect($response->getWording())->toBe('');
 });
 
 // Test the CgiUrlsecQq driver can check a risky URL.
@@ -78,8 +78,8 @@ test('cgi urlsec qq driver can check risky url', function () {
     // 根据驱动中解析风险的逻辑来断言 IsWeChatRiskWarning
     // 如果是根据 whitetype=2 判断安全，那么 whitetype=1 应该是不安全
     expect($response->isWeChatRiskWarning())->toBeFalse();
-    expect($response->getWordingTitle())->toBeNull();
-    expect($response->getWording())->toBeNull();
+    expect($response->getWordingTitle())->toBe('');
+    expect($response->getWording())->toBe('');
 });
 
 // Test the CgiUrlsecQq driver throws exception on API error.

@@ -5,6 +5,7 @@ namespace Weijiajia\TencentUrlDetection\Drivers;
 use Saloon\Enums\Method;
 use Weijiajia\TencentUrlDetection\Request;
 use Weijiajia\TencentUrlDetection\Response;
+use Weijiajia\TencentUrlDetection\TencentUrlDetectionException;
 
 class TwoCaptcha extends Request
 {
@@ -57,11 +58,11 @@ class TwoCaptcha extends Request
         $codeData = json_decode($result->code, true); // 第二个参数true表示返回数组
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new \InvalidArgumentException('Failed to decode JSON response: '.json_last_error_msg());
+            throw new TencentUrlDetectionException('Failed to decode JSON response: '.json_last_error_msg());
         }
 
         if (empty($codeData['ticket']) || empty($codeData['randstr'])) {
-            throw new \InvalidArgumentException('Invalid JSON response: missing ticket or randstr');
+            throw new TencentUrlDetectionException('Invalid JSON response: missing ticket or randstr');
         }
 
         $this->ticket = $codeData['ticket'];
@@ -69,6 +70,53 @@ class TwoCaptcha extends Request
 
         $response = $this->send();
 
+        $rawBody = $response->body();
+        $jsonString = null;
+
+        // Example JSONP: jQueryCallback({"key":"value"})
+        // We need to extract the JSON part: {"key":"value"}
+
+        $firstParenPos = strpos($rawBody, '(');
+        $lastParenPos = strrpos($rawBody, ')');
+
+        // Validate the basic JSONP structure:
+        // 1. '(' must exist and be before ')'
+        // 2. ')' must exist
+        // 3. ')' must be the last character of the trimmed string (to handle potential trailing whitespace)
+        if (
+            false !== $firstParenPos
+            && false !== $lastParenPos
+            && $firstParenPos < $lastParenPos
+            && $lastParenPos === strlen(trim($rawBody)) - 1
+        ) {
+            $callbackPart = substr($rawBody, 0, $firstParenPos);
+
+            // Validate the callback part (e.g., jQuery12345_67890)
+            // It should match typical JavaScript identifier characters used for JSONP callbacks.
+            if (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $callbackPart)) {
+                $jsonString = substr($rawBody, $firstParenPos + 1, $lastParenPos - $firstParenPos - 1);
+            } else {
+                // If the callback part doesn't match expected format, it's an invalid JSONP.
+                throw new TencentUrlDetectionException(
+                    'Invalid JSONP callback format in response: '.substr($rawBody, 0, $firstParenPos)
+                );
+            }
+        } else {
+            // If the response doesn't match the func({...}) structure.
+            // Given the reported error, we expect JSONP. If not found, it's an issue.
+            throw new TencentUrlDetectionException(
+                'Response is not in the expected JSONP format (e.g., func({...})): '.substr($rawBody, 0, 100)
+            );
+        }
+
+        $responseData = json_decode($jsonString, true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new TencentUrlDetectionException(
+                'Syntax error while decoding JSON extracted from JSONP: '.json_last_error_msg()
+                    .'. Extracted content: "'.substr($jsonString, 0, 200).'"'
+            );
+        }
         // {
         //     "data": {
         //         "retcode": 0,
@@ -105,10 +153,10 @@ class TwoCaptcha extends Request
 
         return new Response(
             $url,
-            2 === $response->json('data.results.whitetype'),
-            $response,
-            $response->json('data.results.WordingTitle'),
-            $response->json('data.results.Wording')
+            ($responseData['data']['results']['whitetype'] ?? null) === 2, // Safely access whitetype
+            $response, // Pass the original Saloon\Http\Response object
+            $responseData['data']['results']['WordingTitle'] ?? '', // Default to empty string if not set
+            $responseData['data']['results']['Wording'] ?? ''  // Default to empty string if not set
         );
     }
 

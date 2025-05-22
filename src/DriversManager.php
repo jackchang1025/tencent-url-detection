@@ -3,7 +3,6 @@
 namespace Weijiajia\TencentUrlDetection;
 
 use Illuminate\Support\Manager;
-use Weijiajia\TencentUrlDetection\Contracts\Driver;
 use Weijiajia\TencentUrlDetection\Drivers\CgiUrlsecQq;
 use Weijiajia\TencentUrlDetection\Drivers\Rrbay;
 use Weijiajia\TencentUrlDetection\Drivers\TwoCaptcha;
@@ -28,7 +27,7 @@ class DriversManager extends Manager
         return $this->driver($driver);
     }
 
-    public function createCgiUrlsecQqDriver(): CgiUrlsecQq   
+    public function createCgiUrlsecQqDriver(): CgiUrlsecQq
     {
         return new CgiUrlsecQq();
     }

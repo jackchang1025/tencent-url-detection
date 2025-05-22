@@ -10,8 +10,8 @@ class Response
         public string $url,
         public bool $IsWeChatRiskWarning,
         public SaloonResponse $response,
-        public ?string $wordingTitle = null,
-        public ?string $wording = null,
+        public string $wordingTitle = '',
+        public string $wording = '',
     ) {}
 
     public function isWeChatRiskWarning(): bool
@@ -29,12 +29,12 @@ class Response
         return $this->url;
     }
 
-    public function getWordingTitle(): ?string
+    public function getWordingTitle(): string
     {
         return $this->wordingTitle;
     }
 
-    public function getWording(): ?string
+    public function getWording(): string
     {
         return $this->wording;
     }
